@@ -1,17 +1,19 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
+
+import { getPosts} from '../actions/index';
 import Loading from './Loading';
 
 class Posts extends Component {
-    state={
-        posts:[]
+    async componentDidMount(){
+        const postss = await axios.get('https://jsonplaceholder.typicode.com/posts');
+        this.props.getPosts(postss.data);
     }
-    componentDidMount(){
-        this.props.posts.then(res=> this.setState({posts:res}));
-    }
+
     render(){
-        if(this.state.posts.length>0)
-            {return (
+        if(this.props.posts.length>0) {
+            return (
                 <table className="ui selectable inverted table">
                     <thead>
                         <tr>
@@ -20,12 +22,13 @@ class Posts extends Component {
                         </tr>
                     </thead>
                     <tbody>                       
-                        {this.state.posts.map(post =>{
-                            return(
-                                <tr key={post.id}>
-                                    <td>{post.title}</td>
-                                    <td>{post.body}</td>
-                                </tr>
+                        {
+                            this.props.posts.map(post =>{
+                                return(
+                                    <tr key={post.id}>
+                                        <td>{post.title}</td>
+                                        <td>{post.body}</td>
+                                    </tr>
                                 );
                             })
                         }
@@ -37,7 +40,7 @@ class Posts extends Component {
     }
 }
 
-const mapStateToProps = states =>{
-    return {posts: states.posts};
+const mapStateToProps = state =>{
+    return {posts: state.posts};
 }
-export default connect(mapStateToProps)(Posts);
+export default connect(mapStateToProps,{getPosts})(Posts);

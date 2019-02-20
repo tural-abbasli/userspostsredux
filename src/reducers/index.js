@@ -1,18 +1,17 @@
 import { combineReducers } from 'redux';
-import axios from 'axios';
 
-const usersReducer = async (users=[]) => {
-    return await axios.get('https://jsonplaceholder.typicode.com/users')
-    .then(res => {
-        return users = res.data;
-    });
+const usersReducer = (users=[],action) => {
+    if(action.type === 'GET_USERS'){
+        return action.payload;
+    }
+    return users;
 };
 
-const postsReducer = async (posts=[]) => {
-    return await axios.get('https://jsonplaceholder.typicode.com/posts')
-    .then(res => {
-        return posts = res.data;
-    });
+const postsReducer = (posts=[],action) => {
+    if(action.type === 'GET_POSTS'){
+        return action.payload;
+    }
+    return posts;
 };
 
 export default combineReducers({

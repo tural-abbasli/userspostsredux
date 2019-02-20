@@ -1,16 +1,17 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
+
+import { getUsers } from '../actions/index'
 import Loading from './Loading';
 
 class Users extends Component {
-    state={
-        users:[]
-    }
-    componentDidMount(){
-        this.props.users.then(res=> this.setState({users:res}));
+    async componentDidMount(){
+        const userss = await axios.get('https://jsonplaceholder.typicode.com/users');
+        this.props.getUsers(userss.data);
     }
     render(){
-        if(this.state.users.length>0){
+        if(this.props.users.length>0){
             return (
             <table className="ui selectable inverted table">
                 <thead>
@@ -21,7 +22,7 @@ class Users extends Component {
                     </tr>
                 </thead>
                 <tbody>                       
-                    {this.state.users.map(user =>{
+                    {this.props.users.map(user =>{
                         return(
                             <tr key={user.id}>
                                 <td>{user.name}</td>
@@ -39,7 +40,7 @@ class Users extends Component {
     }
 }
 
-const mapStateToProps = states =>{
-    return {users: states.users};
+const mapStateToProps = state =>{
+    return {users: state.users};
 }
-export default connect(mapStateToProps)(Users);
+export default connect(mapStateToProps,{getUsers})(Users);
